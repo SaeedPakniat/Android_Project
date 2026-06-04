@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Android_Project</string>
+    <string name="focus_inactive">Focus Inactive</string>
+    <string name="design_hw">Design Android HW :(</string>
+    <string name="primary_task">Primary Task</string>
+    <string name="change">Change</string>
+    <string name="hero_text">Achieve your\ndreams, or don\'t :(</string>
+    <string name="time_focused">Time Focused</string>
+    <string name="time_focused_value">14h\nthis week</string>
+    <string name="app_blocker_disabled">Disabled: App\nBlocker</string>
+    <string name="settings">Settings</string>
+    <string name="auto_timer_not_set">Not set up: Auto-timer</string>
+    <string name="mode">Mode</string>
+    <string name="focus">Focus</string>
+    <string name="tasks">Tasks</string>
+    <string name="zones">Zones</string>
+    <string name="profile">Profile</string>
+</resources>
