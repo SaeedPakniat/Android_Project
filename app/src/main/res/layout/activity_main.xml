@@ -490,10 +490,9 @@
                         <ImageView
                             android:id="@+id/iv_chevron_2"
                             android:layout_width="16dp"
-                            android:layout_height="16dp"
+                            android:layout_height="19dp"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentTop="true"
-                            android:lay
                             android:importantForAccessibility="no"
                             android:src="@drawable/ic_chevron"
                             app:tint="@color/text_gray" />
