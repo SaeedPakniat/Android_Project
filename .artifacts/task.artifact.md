@@ -1,0 +1,29 @@
+# Task Management
+
+- [/] Initial Project Research and Setup
+    - [x] Analyze existing data models
+    - [ ] Check `build.gradle` for dependencies (Room, DataStore, etc.)
+- [ ] Implement Database Layer (Room)
+    - [ ] Create `MovieEntity`, `FavouriteEntity`, `WatchlistEntity`
+    - [ ] Implement DAOs
+    - [ ] Create `AppDatabase`
+- [ ] Implement DataStore
+    - [ ] Create `SettingsManager` for sorting preferences
+- [ ] Implement Network Layer (Retrofit)
+    - [ ] Update models for all rating sources (RT, Metacritic)
+- [ ] Implement Repository Layer
+    - [ ] Implement `MovieRepository` with caching and sorting logic
+- [ ] Implement ViewModels (No LiveData/Flow)
+    - [ ] `HomeViewModel`
+    - [ ] `FavouritesViewModel`
+    - [ ] `WatchlistViewModel`
+    - [ ] `DetailViewModel`
+- [ ] Implement UI (Fragments & Adapters)
+    - [ ] Update `HomeFragment` with sorting and search
+    - [ ] Update `FavouritesFragment` with delete and refresh
+    - [ ] Update `WatchlistFragment` with AlertDialog logic
+    - [ ] Update `DetailFragment`/Activity
+- [ ] Final Verification and Testing
+    - [ ] Verify offline support
+    - [ ] Verify error handling (Toasts)
+    - [ ] Verify sorting logic

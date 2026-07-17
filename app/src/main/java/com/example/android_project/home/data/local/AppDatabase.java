@@ -1,0 +1,29 @@
+package com.example.android_project.home.data.local;
+
+import android.content.Context;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import com.example.android_project.home.data.model.Movie;
+import com.example.android_project.home.data.model.FavouriteMovie;
+import com.example.android_project.home.data.model.WatchlistMovie;
+
+@Database(entities = {Movie.class, FavouriteMovie.class, WatchlistMovie.class}, version = 1, exportSchema = false)
+public abstract class AppDatabase extends RoomDatabase {
+    public abstract MovieDao movieDao();
+
+    private static volatile AppDatabase INSTANCE;
+
+    public static AppDatabase getDatabase(final Context context) {
+        if (INSTANCE == null) {
+            synchronized (AppDatabase.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                            AppDatabase.class, "movie_database")
+                            .build();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+}
