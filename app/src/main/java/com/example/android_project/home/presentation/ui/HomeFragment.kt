@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -71,11 +70,13 @@ class HomeFragment : Fragment() {
             // Initial genre: Horror
             val horror = viewModel.getGenreMovies("horror")
             genreAdapter.updateMovies(horror)
+            
+            updateAdaptersSort()
         }
     }
 
     private fun setupRandomPicksRecyclerView() {
-        randomAdapter = RandomMovieAdapter(mutableListOf()) { movie ->
+        randomAdapter = RandomMovieAdapter(emptyList()) { movie ->
             openDetail(movie)
         }
         binding.rvRandomPicks.apply {
@@ -85,7 +86,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupGenreRecyclerView() {
-        genreAdapter = MovieAdapter(mutableListOf()) { movie ->
+        genreAdapter = MovieAdapter(emptyList()) { movie ->
             openDetail(movie)
         }
         binding.rvGenreMovies.apply {
@@ -95,7 +96,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSearchRecyclerView() {
-        searchAdapter = MovieAdapter(mutableListOf()) { movie ->
+        searchAdapter = MovieAdapter(emptyList()) { movie ->
             openDetail(movie)
         }
         binding.rvSearchResults.apply {
@@ -115,7 +116,6 @@ class HomeFragment : Fragment() {
                     binding.ivSearchClear.visibility = View.VISIBLE
                     binding.homeContentContainer.visibility = View.GONE
                     binding.searchResultsContainer.visibility = View.VISIBLE
-                    binding.sortingContainer.visibility = View.VISIBLE
                     
                     searchJob = lifecycleScope.launch {
                         delay(500) // Debounce
@@ -126,7 +126,6 @@ class HomeFragment : Fragment() {
                     binding.ivSearchClear.visibility = View.GONE
                     binding.homeContentContainer.visibility = View.VISIBLE
                     binding.searchResultsContainer.visibility = View.GONE
-                    binding.sortingContainer.visibility = View.GONE
                 }
             }
 
@@ -157,8 +156,9 @@ class HomeFragment : Fragment() {
                 viewModel.updateSortSettings(type, true)
             }
             updateSortingUI()
+            updateAdaptersSort()
             
-            // Re-run search to apply sort
+            // Re-run search if active to apply sort order
             val query = binding.etSearch.text.toString()
             if (query.isNotEmpty()) {
                 val results = viewModel.searchMovies(query)
@@ -172,12 +172,19 @@ class HomeFragment : Fragment() {
             val type = viewModel.getSortType()
             val isEnabled = viewModel.isSortEnabled()
             
-            val selectedColor = ContextCompat.getColor(requireContext(), R.color.accent_yellow)
-            val defaultColor = ContextCompat.getColor(requireContext(), R.color.bg_card)
-            
             binding.btnSortImdb.setBackgroundResource(if (isEnabled && type == "IMDb") R.drawable.bg_nav_selected else R.drawable.bg_chip_imdb)
             binding.btnSortRt.setBackgroundResource(if (isEnabled && type == "Rotten Tomatoes") R.drawable.bg_nav_selected else R.drawable.bg_chip_imdb)
             binding.btnSortMeta.setBackgroundResource(if (isEnabled && type == "Metacritic") R.drawable.bg_nav_selected else R.drawable.bg_chip_imdb)
+        }
+    }
+
+    private fun updateAdaptersSort() {
+        lifecycleScope.launch {
+            val type = viewModel.getSortType()
+            val enabled = viewModel.isSortEnabled()
+            randomAdapter.updateSort(type, enabled)
+            genreAdapter.updateSort(type, enabled)
+            searchAdapter.updateSort(type, enabled)
         }
     }
 

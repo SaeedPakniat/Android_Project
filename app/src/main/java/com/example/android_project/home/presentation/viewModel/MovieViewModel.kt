@@ -8,6 +8,10 @@ import com.example.android_project.home.data.local.SettingsManager
 import com.example.android_project.home.data.model.Movie
 import com.example.android_project.home.data.repository.MovieRepository
 import com.example.android_project.shared_component.API
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -17,32 +21,44 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
         MovieRepository(API.movieService, database.movieDao(), settings)
     }
 
-    suspend fun getFeaturedMovie(): Movie? {
-        // "The Rookie" (2018) series
-        return repository.getMovieDetail("tt7587890")
+    suspend fun getFeaturedMovie(): Movie? = withContext(Dispatchers.IO) {
+        // "The Rookie" (2018) series - ID preserved
+        repository.getMovieDetail("tt7587890")
     }
 
-    suspend fun getRandomPicks(): List<Movie> {
-        // Since random picks don't need ratings for sorting, we just use local or some generic search
-        // For simplicity, let's just get whatever is in DB or search for 'popular'
-        val results = repository.searchMovies("action")
-        return results.shuffled().take(10)
+    suspend fun getRandomPicks(): List<Movie> = withContext(Dispatchers.IO) {
+        val keywords = listOf("war", "star", "dark", "love", "man", "blue", "king", "red", "fast")
+        val randomKeywords = keywords.shuffled().take(3)
+        val jobs = randomKeywords.map { keyword ->
+            async { repository.searchMovies(keyword) }
+        }
+        val results = jobs.awaitAll().flatten()
+        
+        // Sorting and shuffling is a heavy calculation, use Dispatchers.Default
+        withContext(Dispatchers.Default) {
+            results.shuffled().take(10)
+        }
     }
 
-    suspend fun getGenreMovies(genre: String): List<Movie> {
-        return repository.searchMovies(genre).take(9)
+    suspend fun getGenreMovies(genre: String): List<Movie> = withContext(Dispatchers.IO) {
+        repository.searchMovies(genre).take(9)
     }
 
-    suspend fun searchMovies(query: String): List<Movie> {
-        return repository.searchMovies(query)
+    suspend fun searchMovies(query: String): List<Movie> = withContext(Dispatchers.IO) {
+        repository.searchMovies(query)
     }
 
-    suspend fun updateSortSettings(type: String, enabled: Boolean) {
+    suspend fun updateSortSettings(type: String, enabled: Boolean) = withContext(Dispatchers.IO) {
         repository.setSortSettings(type, enabled)
     }
 
-    suspend fun getSortType() = repository.getSortType()
-    suspend fun isSortEnabled() = repository.isSortEnabled()
+    suspend fun getSortType() = withContext(Dispatchers.IO) {
+        repository.getSortType()
+    }
+
+    suspend fun isSortEnabled() = withContext(Dispatchers.IO) {
+        repository.isSortEnabled()
+    }
 }
 
 class MovieViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

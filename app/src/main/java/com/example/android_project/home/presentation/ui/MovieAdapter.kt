@@ -11,8 +11,9 @@ import com.example.android_project.home.data.model.Movie
 import com.example.android_project.shared_component.ImageLoader
 
 class MovieAdapter(
-    private val items: MutableList<Movie>,
-    private val sortType: String = "IMDb",
+    private var items: List<Movie>,
+    private var sortType: String = "IMDb",
+    private var isSortEnabled: Boolean = false,
     private val onDeleteClick: ((Movie) -> Unit)? = null,
     private val onItemClick: (Movie) -> Unit
 ) : RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
@@ -31,8 +32,15 @@ class MovieAdapter(
     override fun getItemCount() = items.size
 
     fun updateMovies(newItems: List<Movie>) {
-        items.clear()
-        items.addAll(newItems)
+        if (items == newItems) return
+        items = newItems
+        notifyDataSetChanged()
+    }
+
+    fun updateSort(newSortType: String, enabled: Boolean) {
+        if (sortType == newSortType && isSortEnabled == enabled) return
+        sortType = newSortType
+        isSortEnabled = enabled
         notifyDataSetChanged()
     }
 
@@ -44,7 +52,7 @@ class MovieAdapter(
             val rating = when (sortType) {
                 "Rotten Tomatoes" -> {
                     binding.ivRatingSource.setImageResource(R.drawable.ic_rt)
-                    binding.ivRatingSource.setColorFilter(0) // No tint for RT icon usually if it has colors
+                    binding.ivRatingSource.setColorFilter(0)
                     item.rottenTomatoesRating
                 }
                 "Metacritic" -> {

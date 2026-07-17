@@ -48,7 +48,10 @@ class DetailActivity : AppCompatActivity() {
         binding.tvDetailTitle.text = movie.title
         binding.tvDetailYear.text = movie.year
         binding.tvDetailRuntime.text = movie.runtime
-        binding.tvDetailRating.text = movie.imdbRating
+        binding.tvDetailRatingImdb.text = movie.imdbRating
+        binding.tvDetailRatingRt.text = movie.rottenTomatoesRating
+        binding.tvDetailRatingMeta.text = movie.metacriticRating
+
         binding.tvDetailGenre.text = movie.genre
         binding.tvDetailPlot.text = movie.plot
         binding.tvDetailDirector.text = movie.director

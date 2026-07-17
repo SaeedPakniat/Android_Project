@@ -8,6 +8,8 @@ import com.example.android_project.home.data.local.SettingsManager
 import com.example.android_project.home.data.model.Movie
 import com.example.android_project.home.data.repository.MovieRepository
 import com.example.android_project.shared_component.API
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class FavouritesViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -17,11 +19,11 @@ class FavouritesViewModel(application: Application) : AndroidViewModel(applicati
         MovieRepository(API.movieService, database.movieDao(), settings)
     }
 
-    suspend fun getFavourites(): List<Movie> {
-        return repository.getFavourites()
+    suspend fun getFavourites(): List<Movie> = withContext(Dispatchers.IO) {
+        repository.getFavourites()
     }
 
-    suspend fun removeFromFavourites(imdbId: String) {
+    suspend fun removeFromFavourites(imdbId: String) = withContext(Dispatchers.IO) {
         repository.removeFromFavourites(imdbId)
     }
 }

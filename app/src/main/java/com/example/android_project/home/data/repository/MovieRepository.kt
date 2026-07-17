@@ -95,27 +95,35 @@ class MovieRepository(
     }
 
     private suspend fun sortMovies(movies: List<Movie>): List<Movie> {
-        if (!settings.isSortEnabled()) return movies
+        val isEnabled = settings.isSortEnabled()
+        if (!isEnabled) return movies
 
         val sortType = settings.getSortType()
-        return movies.sortedWith(compareByDescending<Movie> { movie ->
-            val rating = when (sortType) {
-                "Rotten Tomatoes" -> movie.rottenTomatoesRating
-                "Metacritic" -> movie.metacriticRating
-                else -> movie.imdbRating
-            }
-            if (rating == null || rating == "N/A" || rating.isEmpty()) -1.0 
-            else rating.replace("%", "").replace("/100", "").replace("/10", "").toDoubleOrNull() ?: -1.0
-        })
+        return withContext(Dispatchers.Default) {
+            movies.sortedWith(compareByDescending<Movie> { movie ->
+                val rating = when (sortType) {
+                    "Rotten Tomatoes" -> movie.rottenTomatoesRating
+                    "Metacritic" -> movie.metacriticRating
+                    else -> movie.imdbRating
+                }
+                if (rating == null || rating == "N/A" || rating.isEmpty()) -1.0 
+                else rating.replace("%", "").replace("/100", "").replace("/10", "").toDoubleOrNull() ?: -1.0
+            })
+        }
     }
 
-    suspend fun setSortSettings(type: String, enabled: Boolean) {
+    suspend fun setSortSettings(type: String, enabled: Boolean) = withContext(Dispatchers.IO) {
         settings.setSortType(type)
         settings.setSortEnabled(enabled)
     }
     
-    suspend fun getSortType() = settings.getSortType()
-    suspend fun isSortEnabled() = settings.isSortEnabled()
+    suspend fun getSortType() = withContext(Dispatchers.IO) {
+        settings.getSortType()
+    }
+    
+    suspend fun isSortEnabled() = withContext(Dispatchers.IO) {
+        settings.isSortEnabled()
+    }
 
     private fun MovieDetailResponse.toEntity(): Movie {
         val rt = ratings?.find { it.source == "Rotten Tomatoes" }?.value ?: "N/A"
