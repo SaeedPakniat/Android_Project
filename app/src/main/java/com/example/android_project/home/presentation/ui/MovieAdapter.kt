@@ -3,7 +3,6 @@ package com.example.android_project.home.presentation.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android_project.R
 import com.example.android_project.databinding.ItemMovieGridBinding
@@ -59,7 +58,7 @@ class MovieAdapter(
                 }
                 "Metacritic" -> {
                     binding.ivRatingSource.setImageResource(R.drawable.ic_meta)
-                    binding.ivRatingSource.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
+                    binding.ivRatingSource.setColorFilter(0)
                     item.metacriticRating
                 }
                 else -> {
