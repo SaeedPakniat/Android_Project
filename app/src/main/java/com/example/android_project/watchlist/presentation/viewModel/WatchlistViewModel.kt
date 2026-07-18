@@ -27,12 +27,12 @@ class WatchlistViewModel(application: Application) : AndroidViewModel(applicatio
         repository.removeFromWatchlist(imdbId)
     }
 
-    suspend fun addToFavourites(movie: Movie) = withContext(Dispatchers.IO) {
-        repository.addToFavourites(movie)
+    suspend fun addToFavorites(movie: Movie) = withContext(Dispatchers.IO) {
+        repository.addToFavorites(movie)
     }
 
-    suspend fun isFavourite(imdbId: String): Boolean = withContext(Dispatchers.IO) {
-        repository.isFavourite(imdbId)
+    suspend fun isFavorite(imdbId: String): Boolean = withContext(Dispatchers.IO) {
+        repository.isFavorite(imdbId)
     }
 
     suspend fun getSortType() = withContext(Dispatchers.IO) {

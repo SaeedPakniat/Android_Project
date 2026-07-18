@@ -63,16 +63,16 @@ class DetailActivity : AppCompatActivity() {
 
     private fun updateButtonStates(imdbId: String) {
         lifecycleScope.launch {
-            val isFav = viewModel.isFavourite(imdbId)
+            val isFav = viewModel.isFavorite(imdbId)
             val isInWatchlist = viewModel.isInWatchlist(imdbId)
 
-            binding.btnFavourite.text = if (isFav) "Remove Favourite" else "Add Favourite"
-            binding.btnFavourite.setOnClickListener {
+            binding.btnFavorite.text = if (isFav) "Remove Favorite" else "Add Favorite"
+            binding.btnFavorite.setOnClickListener {
                 lifecycleScope.launch {
                     if (isFav) {
-                        viewModel.removeFromFavourites(imdbId)
+                        viewModel.removeFromFavorites(imdbId)
                     } else {
-                        currentMovie?.let { viewModel.addToFavourites(it) }
+                        currentMovie?.let { viewModel.addToFavorites(it) }
                     }
                     updateButtonStates(imdbId)
                 }

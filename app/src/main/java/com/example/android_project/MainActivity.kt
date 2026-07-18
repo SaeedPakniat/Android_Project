@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.android_project.databinding.ActivityMainBinding
-import com.example.android_project.favourites.presentation.ui.FavouritesFragment
+import com.example.android_project.favorites.presentation.ui.FavoritesFragment
 import com.example.android_project.home.presentation.ui.HomeFragment
 import com.example.android_project.watchlist.presentation.ui.WatchlistFragment
 
@@ -30,9 +30,9 @@ class MainActivity : AppCompatActivity() {
             updateBottomNav(R.id.btn_nav_home)
         }
 
-        binding.btnNavFavourites.setOnClickListener {
-            loadFragment(FavouritesFragment())
-            updateBottomNav(R.id.btn_nav_favourites)
+        binding.btnNavFavorites.setOnClickListener {
+            loadFragment(FavoritesFragment())
+            updateBottomNav(R.id.btn_nav_favorites)
         }
 
         binding.btnNavWatchlist.setOnClickListener {
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateBottomNav(selectedId: Int) {
         val items = listOf(
             Triple(R.id.btn_nav_home, R.id.iv_nav_home, R.id.tv_nav_home),
-            Triple(R.id.btn_nav_favourites, R.id.iv_nav_favourites, R.id.tv_nav_favourites),
+            Triple(R.id.btn_nav_favorites, R.id.iv_nav_favorites, R.id.tv_nav_favorites),
             Triple(R.id.btn_nav_watchlist, R.id.iv_nav_watchlist, R.id.tv_nav_watchlist)
         )
 

@@ -43,10 +43,10 @@ com.example.android_project/
 │   └── presentation/
 │       └── ui/
 │           └── DetailActivity.kt         - Movie detail screen
-├── favourites/
+├── favorites/
 │   └── presentation/
 │       └── ui/
-│           └── FavouritesFragment.kt     - Empty favourites state
+│           └── FavoritesFragment.kt     - Empty favorites state
 ├── watchlist/
 │   └── presentation/
 │       └── ui/
@@ -57,7 +57,7 @@ com.example.android_project/
 ### XML Layouts
 - `activity_main.xml` - FrameLayout container + bottom navigation bar
 - `fragment_home.xml` - ScrollView with featured banner, search, random picks, genre grid
-- `fragment_favourites.xml` - Empty state with heart icon
+- `fragment_favorites.xml` - Empty state with heart icon
 - `fragment_watchlist.xml` - Empty state with bookmark icon
 - `activity_detail.xml` - Movie detail with poster, info chips, description
 - `item_movie_grid.xml` - Grid card item (poster + IMDb badge + title + info)
@@ -71,7 +71,7 @@ com.example.android_project/
 - `ic_search.xml` - Search icon
 - `ic_close.xml` - Clear/close icon
 - `ic_back.xml` - Back arrow
-- `ic_heart.xml` - Heart icon (favourites)
+- `ic_heart.xml` - Heart icon (favorites)
 - `ic_bookmark.xml` - Bookmark icon (watchlist)
 - `ic_home.xml` - Home icon
 
@@ -121,7 +121,7 @@ com.example.android_project/
 ### Step 7: XML Layouts
 - `activity_main.xml` - ConstraintLayout with FrameLayout container + LinearLayout bottom nav
 - `fragment_home.xml` - ScrollView with featured banner, search bar, horizontal RecyclerView, genre chips + grid RecyclerView
-- `fragment_favourites.xml` - Centered empty state with heart icon
+- `fragment_favorites.xml` - Centered empty state with heart icon
 - `fragment_watchlist.xml` - Centered empty state with bookmark icon
 - `activity_detail.xml` - ScrollView with poster, info chips, genre, plot, director, actors, released
 - `item_movie_grid.xml` - Card with poster (2:3 ratio), IMDb badge, title, info
@@ -156,7 +156,7 @@ com.example.android_project/
 1. **Live Search** - TextWatcher.onTextChanged() triggers API call per keystroke
 2. **Horizontal RecyclerView** - Random picks section with LinearLayoutManager.HORIZONTAL
 3. **Genre Grid** - 3-column GridLayoutManager with ChipGroup for genre selection
-4. **Fragment Navigation** - Bottom nav switches between Home, Favourites, Watchlist fragments
+4. **Fragment Navigation** - Bottom nav switches between Home, Favorites, Watchlist fragments
 5. **Detail Screen** - Full movie info with back navigation
 
 ---
@@ -183,6 +183,6 @@ implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 ## Notes
 - Featured movie is hardcoded as War Horse (tt1568913)
 - Random picks load from multiple search queries (batman, avengers, inception, interstellar, joker)
-- Favourites and Watchlist are empty placeholder screens (phase 2)
+- Favorites and Watchlist are empty placeholder screens (phase 2)
 - All UI is XML-based (no Compose)
 - Uses course patterns: MVVM, Repository, ViewModelFactory, ViewBinding

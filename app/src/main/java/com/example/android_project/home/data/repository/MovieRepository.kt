@@ -60,21 +60,21 @@ class MovieRepository(
         }
     }
 
-    suspend fun getFavourites(): List<Movie> = withContext(Dispatchers.IO) {
-        sortMovies(dao.getFavouriteMovies())
+    suspend fun getFavorites(): List<Movie> = withContext(Dispatchers.IO) {
+        sortMovies(dao.getFavoriteMovies())
     }
 
     suspend fun getWatchlist(): List<Movie> = withContext(Dispatchers.IO) {
         sortMovies(dao.getWatchlistMovies())
     }
 
-    suspend fun addToFavourites(movie: Movie) = withContext(Dispatchers.IO) {
+    suspend fun addToFavorites(movie: Movie) = withContext(Dispatchers.IO) {
         dao.insertMovie(movie)
-        dao.insertFavourite(FavouriteMovie(movie.imdbId))
+        dao.insertFavorite(FavoriteMovie(movie.imdbId))
     }
 
-    suspend fun removeFromFavourites(imdbId: String) = withContext(Dispatchers.IO) {
-        dao.deleteFavourite(imdbId)
+    suspend fun removeFromFavorites(imdbId: String) = withContext(Dispatchers.IO) {
+        dao.deleteFavorite(imdbId)
     }
 
     suspend fun addToWatchlist(movie: Movie) = withContext(Dispatchers.IO) {
@@ -86,8 +86,8 @@ class MovieRepository(
         dao.deleteWatchlist(imdbId)
     }
 
-    suspend fun isFavourite(imdbId: String): Boolean = withContext(Dispatchers.IO) {
-        dao.isFavourite(imdbId)
+    suspend fun isFavorite(imdbId: String): Boolean = withContext(Dispatchers.IO) {
+        dao.isFavorite(imdbId)
     }
     
     suspend fun isInWatchlist(imdbId: String): Boolean = withContext(Dispatchers.IO) {

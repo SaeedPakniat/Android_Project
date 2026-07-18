@@ -44,14 +44,14 @@ class WatchlistFragment : Fragment() {
             mutableListOf(),
             onDeleteClick = { movie ->
                 lifecycleScope.launch {
-                    val isFav = viewModel.isFavourite(movie.imdbId)
+                    val isFav = viewModel.isFavorite(movie.imdbId)
                     if (!isFav) {
                         AlertDialog.Builder(requireContext())
                             .setTitle("Remove from Watchlist")
-                            .setMessage("Add to Favourites before removing?")
+                            .setMessage("Add to Favorites before removing?")
                             .setPositiveButton("Yes") { _, _ ->
                                 lifecycleScope.launch {
-                                    viewModel.addToFavourites(movie)
+                                    viewModel.addToFavorites(movie)
                                     viewModel.removeFromWatchlist(movie.imdbId)
                                     refreshData()
                                 }

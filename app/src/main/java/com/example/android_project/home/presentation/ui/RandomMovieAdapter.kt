@@ -63,7 +63,7 @@ class RandomMovieAdapter(
                 }
                 else -> {
                     binding.ivRatingIcon.setImageResource(R.drawable.ic_imdb)
-                    binding.ivRatingIcon.setColorFilter(ContextCompat.getColor(itemView.context, R.color.accent_yellow))
+                    binding.ivRatingIcon.setColorFilter(0)
                     item.imdbRating
                 }
             }

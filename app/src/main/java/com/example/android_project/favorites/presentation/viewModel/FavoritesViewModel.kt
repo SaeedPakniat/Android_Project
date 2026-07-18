@@ -1,4 +1,4 @@
-package com.example.android_project.favourites.presentation.viewModel
+package com.example.android_project.favorites.presentation.viewModel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -11,7 +11,7 @@ import com.example.android_project.shared_component.API
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class FavouritesViewModel(application: Application) : AndroidViewModel(application) {
+class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: MovieRepository by lazy {
         val database = AppDatabase.getDatabase(application)
@@ -19,12 +19,12 @@ class FavouritesViewModel(application: Application) : AndroidViewModel(applicati
         MovieRepository(API.movieService, database.movieDao(), settings)
     }
 
-    suspend fun getFavourites(): List<Movie> = withContext(Dispatchers.IO) {
-        repository.getFavourites()
+    suspend fun getFavorites(): List<Movie> = withContext(Dispatchers.IO) {
+        repository.getFavorites()
     }
 
-    suspend fun removeFromFavourites(imdbId: String) = withContext(Dispatchers.IO) {
-        repository.removeFromFavourites(imdbId)
+    suspend fun removeFromFavorites(imdbId: String) = withContext(Dispatchers.IO) {
+        repository.removeFromFavorites(imdbId)
     }
 
     suspend fun getSortType() = withContext(Dispatchers.IO) {
@@ -36,11 +36,11 @@ class FavouritesViewModel(application: Application) : AndroidViewModel(applicati
     }
 }
 
-class FavouritesViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+class FavoritesViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FavouritesViewModel::class.java)) {
-            return FavouritesViewModel(application) as T
+        if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
+            return FavoritesViewModel(application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

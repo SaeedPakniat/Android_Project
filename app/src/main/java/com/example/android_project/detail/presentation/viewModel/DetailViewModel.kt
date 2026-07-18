@@ -23,12 +23,12 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         repository.getMovieDetail(imdbId)
     }
 
-    suspend fun addToFavourites(movie: Movie) = withContext(Dispatchers.IO) {
-        repository.addToFavourites(movie)
+    suspend fun addToFavorites(movie: Movie) = withContext(Dispatchers.IO) {
+        repository.addToFavorites(movie)
     }
 
-    suspend fun removeFromFavourites(imdbId: String) = withContext(Dispatchers.IO) {
-        repository.removeFromFavourites(imdbId)
+    suspend fun removeFromFavorites(imdbId: String) = withContext(Dispatchers.IO) {
+        repository.removeFromFavorites(imdbId)
     }
 
     suspend fun addToWatchlist(movie: Movie) = withContext(Dispatchers.IO) {
@@ -39,8 +39,8 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         repository.removeFromWatchlist(imdbId)
     }
 
-    suspend fun isFavourite(imdbId: String): Boolean = withContext(Dispatchers.IO) {
-        repository.isFavourite(imdbId)
+    suspend fun isFavorite(imdbId: String): Boolean = withContext(Dispatchers.IO) {
+        repository.isFavorite(imdbId)
     }
     
     suspend fun isInWatchlist(imdbId: String): Boolean = withContext(Dispatchers.IO) {

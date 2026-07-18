@@ -15,4 +15,7 @@
     <string name="tasks">Tasks</string>
     <string name="zones">Zones</string>
     <string name="profile">Profile</string>
+    <string name="you_can_save_and_track_your_watchlist_here">You can save and track your watchlist here.</string>
+    <string name="your_watchlist_is_empty">Your watchlist is empty</string>
+    <string name="watchlist">Watchlist</string>
 </resources>

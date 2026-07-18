@@ -50,8 +50,7 @@
                         android:id="@+id/iv_rating_icon"
                         android:layout_width="14dp"
                         android:layout_height="14dp"
-                        android:src="@drawable/ic_imdb"
-                        app:tint="@color/accent_yellow" />
+                        android:src="@drawable/ic_imdb" />
 
                     <TextView
                         android:id="@+id/tv_imdb_rating"

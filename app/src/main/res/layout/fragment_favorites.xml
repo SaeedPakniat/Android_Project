@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_glow"
-    tools:context=".favourites.presentation.ui.FavouritesFragment">
+    tools:context=".favorites.presentation.ui.FavoritesFragment">
 
     <TextView
         android:id="@+id/tv_title"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:text="Favourites"
+        android:text="Favorites"
         android:textColor="@color/text_white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_favourites"
+        android:id="@+id/rv_favorites"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="No favourites yet"
+            android:text="No favorites yet"
             android:textColor="@color/text_white"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:gravity="center"
-            android:text="This screen is ready for phase 2. For now, students only need to navigate here."
+            android:text="Your favorite movies will appear here."
             android:textColor="@color/text_gray"
             android:textSize="14sp" />
     </LinearLayout>

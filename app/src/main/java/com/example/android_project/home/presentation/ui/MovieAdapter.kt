@@ -64,7 +64,7 @@ class MovieAdapter(
                 }
                 else -> {
                     binding.ivRatingSource.setImageResource(R.drawable.ic_imdb)
-                    binding.ivRatingSource.setColorFilter(ContextCompat.getColor(itemView.context, R.color.accent_yellow))
+                    binding.ivRatingSource.setColorFilter(0)
                     item.imdbRating
                 }
             }

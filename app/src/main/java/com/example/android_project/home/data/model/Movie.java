@@ -25,7 +25,7 @@ public class Movie {
     public String type;
     public String rottenTomatoesRating;
     public String metacriticRating;
-    public boolean isFavourite;
+    public boolean isFavorite;
     public boolean isInWatchlist;
 
     public Movie() {}

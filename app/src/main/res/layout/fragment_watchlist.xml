@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:text="Watchlist"
+        android:text="@string/watchlist"
         android:textColor="@color/text_white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Your watchlist is empty"
+            android:text="@string/your_watchlist_is_empty"
             android:textColor="@color/text_white"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:gravity="center"
-            android:text="Saving movies will come later. This phase only needs the destination and empty state."
+            android:text="@string/you_can_save_and_track_your_watchlist_here"
             android:textColor="@color/text_gray"
             android:textSize="14sp" />
     </LinearLayout>

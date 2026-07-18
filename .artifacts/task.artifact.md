@@ -4,7 +4,7 @@
     - [x] Analyze existing data models
     - [ ] Check `build.gradle` for dependencies (Room, DataStore, etc.)
 - [ ] Implement Database Layer (Room)
-    - [ ] Create `MovieEntity`, `FavouriteEntity`, `WatchlistEntity`
+    - [ ] Create `MovieEntity`, `FavoriteEntity`, `WatchlistEntity`
     - [ ] Implement DAOs
     - [ ] Create `AppDatabase`
 - [ ] Implement DataStore
@@ -15,12 +15,12 @@
     - [ ] Implement `MovieRepository` with caching and sorting logic
 - [ ] Implement ViewModels (No LiveData/Flow)
     - [ ] `HomeViewModel`
-    - [ ] `FavouritesViewModel`
+    - [ ] `FavoritesViewModel`
     - [ ] `WatchlistViewModel`
     - [ ] `DetailViewModel`
 - [ ] Implement UI (Fragments & Adapters)
     - [ ] Update `HomeFragment` with sorting and search
-    - [ ] Update `FavouritesFragment` with delete and refresh
+    - [ ] Update `FavoritesFragment` with delete and refresh
     - [ ] Update `WatchlistFragment` with AlertDialog logic
     - [ ] Update `DetailFragment`/Activity
 - [ ] Final Verification and Testing

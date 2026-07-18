@@ -65,7 +65,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/btn_nav_favourites"
+            android:id="@+id/btn_nav_favorites"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -75,7 +75,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/iv_nav_favourites"
+                android:id="@+id/iv_nav_favorites"
                 android:layout_width="48dp"
                 android:layout_height="32dp"
                 android:importantForAccessibility="no"
@@ -86,11 +86,11 @@
                 app:tint="@color/text_gray" />
 
             <TextView
-                android:id="@+id/tv_nav_favourites"
+                android:id="@+id/tv_nav_favorites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Favourites"
+                android:text="Favorites"
                 android:textColor="@color/text_gray"
                 android:textSize="12sp" />
         </LinearLayout>
