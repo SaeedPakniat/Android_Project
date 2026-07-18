@@ -34,6 +34,14 @@ class WatchlistViewModel(application: Application) : AndroidViewModel(applicatio
     suspend fun isFavourite(imdbId: String): Boolean = withContext(Dispatchers.IO) {
         repository.isFavourite(imdbId)
     }
+
+    suspend fun getSortType() = withContext(Dispatchers.IO) {
+        repository.getSortType()
+    }
+
+    suspend fun isSortEnabled() = withContext(Dispatchers.IO) {
+        repository.isSortEnabled()
+    }
 }
 
 class WatchlistViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

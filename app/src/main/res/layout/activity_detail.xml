@@ -58,7 +58,7 @@
                         android:layout_width="14dp"
                         android:layout_height="14dp"
                         android:src="@drawable/ic_imdb"
-                        app:tint="@color/accent_yellow" />
+                         />
                     <TextView
                         android:id="@+id/tv_detail_rating_imdb"
                         android:layout_width="wrap_content"

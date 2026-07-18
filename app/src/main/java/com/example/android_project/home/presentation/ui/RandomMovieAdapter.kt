@@ -29,6 +29,8 @@ class RandomMovieAdapter(
 
     override fun getItemCount() = items.size
 
+    fun getMovies() = items
+
     fun updateMovies(newItems: List<Movie>) {
         if (items == newItems) return
         items = newItems

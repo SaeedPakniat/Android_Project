@@ -182,9 +182,15 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             val type = viewModel.getSortType()
             val enabled = viewModel.isSortEnabled()
+            
             randomAdapter.updateSort(type, enabled)
             genreAdapter.updateSort(type, enabled)
             searchAdapter.updateSort(type, enabled)
+
+            // Re-sort current lists to ensure they match the selected criteria
+            randomAdapter.updateMovies(viewModel.sortMovies(randomAdapter.getMovies()))
+            genreAdapter.updateMovies(viewModel.sortMovies(genreAdapter.getMovies()))
+            searchAdapter.updateMovies(viewModel.sortMovies(searchAdapter.getMovies()))
         }
     }
 

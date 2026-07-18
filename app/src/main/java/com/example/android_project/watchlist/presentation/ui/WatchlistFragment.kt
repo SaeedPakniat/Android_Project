@@ -84,6 +84,10 @@ class WatchlistFragment : Fragment() {
     private fun refreshData() {
         lifecycleScope.launch {
             val movies = viewModel.getWatchlist()
+            val sortType = viewModel.getSortType()
+            val isEnabled = viewModel.isSortEnabled()
+            adapter.updateSort(sortType, isEnabled)
+
             if (movies.isEmpty()) {
                 binding.emptyState.visibility = View.VISIBLE
                 binding.rvWatchlist.visibility = View.GONE

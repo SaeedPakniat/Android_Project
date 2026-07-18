@@ -26,6 +26,14 @@ class FavouritesViewModel(application: Application) : AndroidViewModel(applicati
     suspend fun removeFromFavourites(imdbId: String) = withContext(Dispatchers.IO) {
         repository.removeFromFavourites(imdbId)
     }
+
+    suspend fun getSortType() = withContext(Dispatchers.IO) {
+        repository.getSortType()
+    }
+
+    suspend fun isSortEnabled() = withContext(Dispatchers.IO) {
+        repository.isSortEnabled()
+    }
 }
 
 class FavouritesViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

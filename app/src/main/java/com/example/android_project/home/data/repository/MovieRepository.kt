@@ -61,11 +61,11 @@ class MovieRepository(
     }
 
     suspend fun getFavourites(): List<Movie> = withContext(Dispatchers.IO) {
-        dao.getFavouriteMovies()
+        sortMovies(dao.getFavouriteMovies())
     }
 
     suspend fun getWatchlist(): List<Movie> = withContext(Dispatchers.IO) {
-        dao.getWatchlistMovies()
+        sortMovies(dao.getWatchlistMovies())
     }
 
     suspend fun addToFavourites(movie: Movie) = withContext(Dispatchers.IO) {
@@ -94,7 +94,7 @@ class MovieRepository(
         dao.isInWatchlist(imdbId)
     }
 
-    private suspend fun sortMovies(movies: List<Movie>): List<Movie> {
+    suspend fun sortMovies(movies: List<Movie>): List<Movie> {
         val isEnabled = settings.isSortEnabled()
         if (!isEnabled) return movies
 

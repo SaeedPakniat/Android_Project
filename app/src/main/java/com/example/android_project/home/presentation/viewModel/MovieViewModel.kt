@@ -34,10 +34,8 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
         }
         val results = jobs.awaitAll().flatten()
         
-        // Sorting and shuffling is a heavy calculation, use Dispatchers.Default
-        withContext(Dispatchers.Default) {
-            results.shuffled().take(10)
-        }
+        val randomList = results.shuffled().take(10)
+        repository.sortMovies(randomList)
     }
 
     suspend fun getGenreMovies(genre: String): List<Movie> = withContext(Dispatchers.IO) {
@@ -46,6 +44,10 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
 
     suspend fun searchMovies(query: String): List<Movie> = withContext(Dispatchers.IO) {
         repository.searchMovies(query)
+    }
+
+    suspend fun sortMovies(movies: List<Movie>): List<Movie> = withContext(Dispatchers.IO) {
+        repository.sortMovies(movies)
     }
 
     suspend fun updateSortSettings(type: String, enabled: Boolean) = withContext(Dispatchers.IO) {

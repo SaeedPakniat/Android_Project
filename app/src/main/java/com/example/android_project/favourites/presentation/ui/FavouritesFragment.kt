@@ -62,6 +62,10 @@ class FavouritesFragment : Fragment() {
     private fun refreshData() {
         lifecycleScope.launch {
             val movies = viewModel.getFavourites()
+            val sortType = viewModel.getSortType()
+            val isEnabled = viewModel.isSortEnabled()
+            adapter.updateSort(sortType, isEnabled)
+
             if (movies.isEmpty()) {
                 binding.emptyState.visibility = View.VISIBLE
                 binding.rvFavourites.visibility = View.GONE
