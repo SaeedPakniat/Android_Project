@@ -3,6 +3,7 @@ package com.example.android_project.home.presentation.viewModel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.android_project.home.data.local.AppDatabase
 import com.example.android_project.home.data.local.SettingsManager
 import com.example.android_project.home.data.model.Movie
@@ -11,6 +12,10 @@ import com.example.android_project.shared_component.API
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {
@@ -21,25 +26,54 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
         MovieRepository(API.movieService, database.movieDao(), settings)
     }
 
-    suspend fun getFeaturedMovie(): Movie? = withContext(Dispatchers.IO) {
-        // "The Rookie" (2018) series - ID preserved
-        repository.getMovieDetail("tt7587890")
+    private val _featuredMovie = MutableStateFlow<Movie?>(null)
+    val featuredMovie: StateFlow<Movie?> = _featuredMovie.asStateFlow()
+
+    private val _randomPicks = MutableStateFlow<List<Movie>>(emptyList())
+    val randomPicks: StateFlow<List<Movie>> = _randomPicks.asStateFlow()
+
+    private val _genreMovies = MutableStateFlow<List<Movie>>(emptyList())
+    val genreMovies: StateFlow<List<Movie>> = _genreMovies.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private var currentGenre: String = "horror"
+
+    init {
+        loadInitialData()
     }
 
-    suspend fun getRandomPicks(): List<Movie> = withContext(Dispatchers.IO) {
-        val keywords = listOf("war", "star", "dark", "love", "man", "blue", "king", "red", "fast")
-        val randomKeywords = keywords.shuffled().take(3)
-        val jobs = randomKeywords.map { keyword ->
-            async { repository.searchMovies(keyword) }
+    fun loadInitialData() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                // "The Rookie" (2018) series - ID preserved
+                _featuredMovie.value = repository.getMovieDetail("tt7587890")
+
+                val keywords = listOf("war", "star", "dark", "love", "man", "blue", "king", "red", "fast")
+                val randomKeywords = keywords.shuffled().take(3)
+                val jobs = randomKeywords.map { keyword ->
+                    async { repository.searchMovies(keyword) }
+                }
+                val results = jobs.awaitAll().flatten()
+                val randomList = results.shuffled().take(10)
+                _randomPicks.value = repository.sortMovies(randomList)
+
+                _genreMovies.value = repository.searchMovies(currentGenre).take(9)
+            } catch (e: Exception) {
+                // Handle error
+            } finally {
+                _isLoading.value = false
+            }
         }
-        val results = jobs.awaitAll().flatten()
-        
-        val randomList = results.shuffled().take(10)
-        repository.sortMovies(randomList)
     }
 
-    suspend fun getGenreMovies(genre: String): List<Movie> = withContext(Dispatchers.IO) {
-        repository.searchMovies(genre).take(9)
+    fun selectGenre(genre: String) {
+        currentGenre = genre
+        viewModelScope.launch {
+            _genreMovies.value = repository.searchMovies(genre).take(9)
+        }
     }
 
     suspend fun searchMovies(query: String): List<Movie> = withContext(Dispatchers.IO) {

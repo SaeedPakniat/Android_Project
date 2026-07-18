@@ -67,6 +67,12 @@ dependencies {
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // SwipeRefreshLayout
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // Coil (Image Loading & Caching)
+    implementation("io.coil-kt:coil:2.4.0")
+
     // Navigation
     val navVersion = "2.7.0"
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")

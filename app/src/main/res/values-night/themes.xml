@@ -4,4 +4,8 @@
         <item name="android:windowLightStatusBar" tools:targetApi="l">false</item>
         <item name="android:navigationBarColor" tools:targetApi="l">@color/bg_main</item>
     </style>
+
+    <style name="RoundedCornerImage">
+        <item name="cornerSize">8dp</item>
+    </style>
 </resources>

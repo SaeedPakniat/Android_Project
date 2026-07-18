@@ -14,4 +14,8 @@
         <item name="android:textColor">@color/text_white</item>
         <item name="checkedIconTint">@color/accent_yellow</item>
     </style>
+
+    <style name="RoundedCornerImage">
+        <item name="cornerSize">8dp</item>
+    </style>
 </resources>

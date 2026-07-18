@@ -21,6 +21,8 @@ import com.example.android_project.home.presentation.viewModel.MovieViewModelFac
 import com.example.android_project.shared_component.ImageLoader
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -44,7 +46,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this, MovieViewModelFactory(requireActivity().application))[MovieViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), MovieViewModelFactory(requireActivity().application))[MovieViewModel::class.java]
 
         setupRandomPicksRecyclerView()
         setupGenreRecyclerView()
@@ -52,28 +54,53 @@ class HomeFragment : Fragment() {
         setupSearchBar()
         setupGenreChips()
         setupSorting()
-        loadInitialData()
+        setupRefreshLayout()
+        observeViewModel()
     }
 
-    private fun loadInitialData() {
-        lifecycleScope.launch {
-            val featured = viewModel.getFeaturedMovie()
-            featured?.let { movie ->
-                binding.tvFeaturedTitle.text = movie.title
-                binding.tvFeaturedInfo.text = "${movie.year} | ${movie.runtime} | ${movie.imdbRating} IMDb"
-                ImageLoader.load(movie.poster, binding.ivFeaturedPoster, android.R.drawable.ic_menu_gallery)
+    private fun setupRefreshLayout() {
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.loadInitialData()
+        }
+        // Optional: customize colors
+        binding.swipeRefresh.setColorSchemeResources(R.color.accent_yellow)
+        binding.swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.bg_card)
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.featuredMovie.collectLatest { movie ->
+                        movie?.let {
+                            binding.tvFeaturedTitle.text = it.title
+                            binding.tvFeaturedInfo.text = "${it.year} | ${it.runtime} | ${it.imdbRating} IMDb"
+                            ImageLoader.load(it.poster, binding.ivFeaturedPoster, android.R.drawable.ic_menu_gallery)
+                        }
+                    }
+                }
+                launch {
+                    viewModel.randomPicks.collectLatest { movies ->
+                        randomAdapter.updateMovies(movies)
+                        updateAdaptersSort()
+                    }
+                }
+                launch {
+                    viewModel.genreMovies.collectLatest { movies ->
+                        genreAdapter.updateMovies(movies)
+                        updateAdaptersSort()
+                    }
+                }
+                launch {
+                    viewModel.isLoading.collectLatest { isLoading ->
+                        binding.swipeRefresh.isRefreshing = isLoading
+                    }
+                }
             }
-
-            val random = viewModel.getRandomPicks()
-            randomAdapter.updateMovies(random)
-
-            // Initial genre: Horror
-            val horror = viewModel.getGenreMovies("horror")
-            genreAdapter.updateMovies(horror)
-            
-            updateAdaptersSort()
         }
     }
+
+
 
     private fun setupRandomPicksRecyclerView() {
         randomAdapter = RandomMovieAdapter(emptyList()) { movie ->
@@ -196,17 +223,15 @@ class HomeFragment : Fragment() {
 
     private fun setupGenreChips() {
         binding.chipGroupGenres.setOnCheckedStateChangeListener { _, checkedIds ->
-            lifecycleScope.launch {
-                when {
-                    checkedIds.contains(binding.chipHorror.id) -> {
-                        genreAdapter.updateMovies(viewModel.getGenreMovies("horror"))
-                    }
-                    checkedIds.contains(binding.chipScifi.id) -> {
-                        genreAdapter.updateMovies(viewModel.getGenreMovies("sci-fi"))
-                    }
-                    checkedIds.contains(binding.chipDrama.id) -> {
-                        genreAdapter.updateMovies(viewModel.getGenreMovies("drama"))
-                    }
+            when {
+                checkedIds.contains(binding.chipHorror.id) -> {
+                    viewModel.selectGenre("horror")
+                }
+                checkedIds.contains(binding.chipScifi.id) -> {
+                    viewModel.selectGenre("sci-fi")
+                }
+                checkedIds.contains(binding.chipDrama.id) -> {
+                    viewModel.selectGenre("drama")
                 }
             }
         }
