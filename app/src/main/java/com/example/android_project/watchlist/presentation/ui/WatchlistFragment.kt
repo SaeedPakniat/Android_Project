@@ -94,28 +94,50 @@ class WatchlistFragment : Fragment() {
     private fun showRemoveDialog(movie: Movie) {
         lifecycleScope.launch {
             val isFav = viewModel.isFavorite(movie.imdbId)
-            if (!isFav) {
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Remove from Watchlist")
-                    .setMessage("Add to Favorites before removing?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        lifecycleScope.launch {
-                            viewModel.addToFavorites(movie)
-                            viewModel.removeFromWatchlist(movie.imdbId)
-                            refreshData()
-                        }
+            
+            val dialogView = layoutInflater.inflate(com.example.android_project.R.layout.dialog_remove_watchlist, null)
+            val bindingDialog = com.example.android_project.databinding.DialogRemoveWatchlistBinding.bind(dialogView)
+            
+            val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext(), com.example.android_project.R.style.CustomDialogTheme)
+                .setView(dialogView)
+                .create()
+            
+            if (isFav) {
+                bindingDialog.tvMessage.text = "Remove this movie from your watchlist?"
+                bindingDialog.btnMoveToFavorites.text = "Remove"
+                bindingDialog.btnRemoveOnly.visibility = View.GONE
+
+                bindingDialog.btnMoveToFavorites.setOnClickListener {
+                    lifecycleScope.launch {
+                        viewModel.removeFromWatchlist(movie.imdbId)
+                        refreshData()
+                        dialog.dismiss()
                     }
-                    .setNegativeButton("No") { _, _ ->
-                        lifecycleScope.launch {
-                            viewModel.removeFromWatchlist(movie.imdbId)
-                            refreshData()
-                        }
-                    }
-                    .show()
+                }
             } else {
-                viewModel.removeFromWatchlist(movie.imdbId)
-                refreshData()
+                bindingDialog.btnMoveToFavorites.setOnClickListener {
+                    lifecycleScope.launch {
+                        viewModel.addToFavorites(movie)
+                        viewModel.removeFromWatchlist(movie.imdbId)
+                        refreshData()
+                        dialog.dismiss()
+                    }
+                }
+
+                bindingDialog.btnRemoveOnly.setOnClickListener {
+                    lifecycleScope.launch {
+                        viewModel.removeFromWatchlist(movie.imdbId)
+                        refreshData()
+                        dialog.dismiss()
+                    }
+                }
             }
+            
+            bindingDialog.btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+            
+            dialog.show()
         }
     }
 
