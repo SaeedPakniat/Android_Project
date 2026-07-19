@@ -121,6 +121,8 @@ class FavoritesFragment : Fragment() {
             val movies = viewModel.getFavorites()
             allMovies = movies
             
+            updateStats(movies)
+
             val query = binding.etSearch.text.toString()
             if (query.isNotEmpty()) {
                 filterMovies(query)
@@ -128,13 +130,36 @@ class FavoritesFragment : Fragment() {
                 if (movies.isEmpty()) {
                     binding.emptyState.visibility = View.VISIBLE
                     binding.rvFavorites.visibility = View.GONE
+                    binding.tvStats.visibility = View.GONE
                 } else {
                     binding.emptyState.visibility = View.GONE
                     binding.rvFavorites.visibility = View.VISIBLE
+                    binding.tvStats.visibility = View.VISIBLE
                     adapter.updateMovies(movies)
                 }
             }
         }
+    }
+
+    private fun updateStats(movies: List<Movie>) {
+        if (movies.isEmpty()) {
+            binding.tvStats.visibility = View.GONE
+            return
+        }
+        
+        var totalMinutes = 0
+        movies.forEach { movie ->
+            val runtime = movie.runtime ?: ""
+            val minutes = runtime.replace(" min", "").toIntOrNull() ?: 0
+            totalMinutes += minutes
+        }
+        
+        val hours = totalMinutes / 60
+        val remainingMinutes = totalMinutes % 60
+        
+        val timeString = if (hours > 0) "${hours}h ${remainingMinutes}m" else "${remainingMinutes}m"
+        binding.tvStats.text = "${movies.size} movies | $timeString total watch time"
+        binding.tvStats.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

@@ -46,6 +46,25 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun isInWatchlist(imdbId: String): Boolean = withContext(Dispatchers.IO) {
         repository.isInWatchlist(imdbId)
     }
+
+    suspend fun addToRecentlyViewed(movie: Movie) = withContext(Dispatchers.IO) {
+        repository.addToRecentlyViewed(movie)
+    }
+
+    suspend fun updateUserRating(imdbId: String, rating: Float) = withContext(Dispatchers.IO) {
+        val movie = repository.getMovieDetail(imdbId)
+        if (movie != null) {
+            movie.userRating = rating
+            // Assuming insertMovie updates if it exists
+            repository.addToFavorites(movie) // This will insert/update movie in DB
+        }
+    }
+
+    suspend fun getRecommendations(genre: String): List<Movie> = withContext(Dispatchers.IO) {
+        // Extract first genre for more targeted search
+        val firstGenre = genre.split(",").firstOrNull()?.trim() ?: genre
+        repository.searchMovies(firstGenre).take(10)
+    }
 }
 
 class DetailViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

@@ -9,7 +9,7 @@ import com.example.android_project.home.data.model.FavoriteMovie;
 import com.example.android_project.home.data.model.WatchlistMovie;
 import com.example.android_project.home.data.model.RecentlyViewedMovie;
 
-@Database(entities = {Movie.class, FavoriteMovie.class, WatchlistMovie.class, RecentlyViewedMovie.class}, version = 2, exportSchema = false)
+@Database(entities = {Movie.class, FavoriteMovie.class, WatchlistMovie.class, RecentlyViewedMovie.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract MovieDao movieDao();
 

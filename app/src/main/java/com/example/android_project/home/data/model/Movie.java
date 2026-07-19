@@ -27,6 +27,7 @@ public class Movie {
     public String metacriticRating;
     public boolean isFavorite;
     public boolean isInWatchlist;
+    public float userRating;
 
     public Movie() {}
 

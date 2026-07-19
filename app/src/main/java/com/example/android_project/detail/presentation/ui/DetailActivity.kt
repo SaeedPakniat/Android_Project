@@ -3,14 +3,17 @@ package com.example.android_project.detail.presentation.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android_project.databinding.ActivityDetailBinding
 import com.example.android_project.detail.presentation.viewModel.DetailViewModel
 import com.example.android_project.detail.presentation.viewModel.DetailViewModelFactory
 import com.example.android_project.home.data.model.Movie
+import com.example.android_project.home.presentation.ui.RandomMovieAdapter
 import com.example.android_project.shared_component.ImageLoader
 import kotlinx.coroutines.launch
 
@@ -18,6 +21,7 @@ class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
     private lateinit var viewModel: DetailViewModel
+    private lateinit var recommendationsAdapter: RandomMovieAdapter
     private var currentMovie: Movie? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +35,13 @@ class DetailActivity : AppCompatActivity() {
 
         binding.ivShare.setOnClickListener { shareMovie() }
 
+        binding.btnTrailer.setOnClickListener { watchTrailer() }
+
         binding.containerImdb.setOnClickListener { openExternalLink("https://www.imdb.com/title/${currentMovie?.imdbId}") }
         binding.containerRt.setOnClickListener { openExternalLink("https://www.rottentomatoes.com/search?search=${currentMovie?.title}") }
         binding.containerMeta.setOnClickListener { openExternalLink("https://www.metacritic.com/search/movie/${currentMovie?.title}/results") }
+
+        setupRecommendationsRecyclerView()
 
         val imdbId = intent.getStringExtra("imdb_id") ?: return
         loadMovieDetail(imdbId)
@@ -46,8 +54,35 @@ class DetailActivity : AppCompatActivity() {
                 currentMovie = movie
                 displayMovie(movie)
                 updateButtonStates(imdbId)
+                viewModel.addToRecentlyViewed(movie)
+                loadRecommendations(movie.genre ?: "")
             } else {
                 Toast.makeText(this@DetailActivity, "Error loading movie details", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setupRecommendationsRecyclerView() {
+        recommendationsAdapter = RandomMovieAdapter(emptyList()) { movie ->
+            val intent = Intent(this, DetailActivity::class.java)
+            intent.putExtra("imdb_id", movie.imdbId)
+            startActivity(intent)
+        }
+        binding.rvRecommendations.apply {
+            adapter = recommendationsAdapter
+            layoutManager = LinearLayoutManager(this@DetailActivity, LinearLayoutManager.HORIZONTAL, false)
+        }
+    }
+
+    private fun loadRecommendations(genre: String) {
+        lifecycleScope.launch {
+            val recommendations = viewModel.getRecommendations(genre)
+                .filter { it.imdbId != currentMovie?.imdbId } // Don't show current movie
+            
+            if (recommendations.isNotEmpty()) {
+                binding.tvRecommendationsTitle.visibility = View.VISIBLE
+                binding.rvRecommendations.visibility = View.VISIBLE
+                recommendationsAdapter.updateMovies(recommendations)
             }
         }
     }
@@ -65,6 +100,16 @@ class DetailActivity : AppCompatActivity() {
         binding.tvDetailDirector.text = movie.director
         binding.tvDetailActors.text = movie.actors
         binding.tvDetailReleased.text = movie.released
+
+        binding.ratingBar.rating = movie.userRating
+        binding.ratingBar.setOnRatingBarChangeListener { _, rating, fromUser ->
+            if (fromUser) {
+                lifecycleScope.launch {
+                    viewModel.updateUserRating(movie.imdbId, rating)
+                    Toast.makeText(this@DetailActivity, "Rating saved: $rating stars", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         ImageLoader.load(movie.poster, binding.ivDetailPoster, android.R.drawable.ic_menu_gallery)
     }
@@ -125,6 +170,18 @@ class DetailActivity : AppCompatActivity() {
             startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(this, "Could not open link", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun watchTrailer() {
+        val movie = currentMovie ?: return
+        val query = "${movie.title} ${movie.year} official trailer"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/results?search_query=${Uri.encode(query)}"))
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "YouTube not found, opening in browser", Toast.LENGTH_SHORT).show()
+            openExternalLink("https://www.youtube.com/results?search_query=${Uri.encode(query)}")
         }
     }
 }
