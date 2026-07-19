@@ -119,8 +119,10 @@ class DetailActivity : AppCompatActivity() {
             val isFav = viewModel.isFavorite(imdbId)
             val isInWatchlist = viewModel.isInWatchlist(imdbId)
 
-            binding.btnFavorite.text = if (isFav) "Remove Favorite" else "Add Favorite"
-            binding.btnFavorite.setOnClickListener {
+            binding.btnDetailFavorite.imageTintList = android.content.res.ColorStateList.valueOf(
+                if (isFav) android.graphics.Color.RED else android.graphics.Color.WHITE
+            )
+            binding.btnDetailFavorite.setOnClickListener {
                 lifecycleScope.launch {
                     if (isFav) {
                         viewModel.removeFromFavorites(imdbId)
@@ -135,8 +137,10 @@ class DetailActivity : AppCompatActivity() {
                 }
             }
 
-            binding.btnWatchlist.text = if (isInWatchlist) "Remove Watchlist" else "Add Watchlist"
-            binding.btnWatchlist.setOnClickListener {
+            binding.btnDetailWatchlist.imageTintList = android.content.res.ColorStateList.valueOf(
+                if (isInWatchlist) androidx.core.content.ContextCompat.getColor(this@DetailActivity, com.example.android_project.R.color.accent_yellow) else android.graphics.Color.WHITE
+            )
+            binding.btnDetailWatchlist.setOnClickListener {
                 lifecycleScope.launch {
                     if (isInWatchlist) {
                         viewModel.removeFromWatchlist(imdbId)

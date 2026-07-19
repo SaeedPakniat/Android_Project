@@ -11,6 +11,7 @@ public class FavoriteMovie {
 
     public FavoriteMovie() {}
 
+    @androidx.room.Ignore
     public FavoriteMovie(String imdbId) {
         this.imdbId = imdbId;
     }

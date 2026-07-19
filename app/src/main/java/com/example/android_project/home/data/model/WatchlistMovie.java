@@ -11,6 +11,7 @@ public class WatchlistMovie {
 
     public WatchlistMovie() {}
 
+    @androidx.room.Ignore
     public WatchlistMovie(String imdbId) {
         this.imdbId = imdbId;
     }

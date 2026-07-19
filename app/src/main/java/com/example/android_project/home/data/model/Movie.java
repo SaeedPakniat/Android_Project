@@ -31,6 +31,7 @@ public class Movie {
 
     public Movie() {}
 
+    @androidx.room.Ignore
     public Movie(String imdbId, String title, String year, String poster, String type) {
         this.imdbId = imdbId;
         this.title = title;
