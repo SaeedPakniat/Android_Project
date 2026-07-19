@@ -55,7 +55,16 @@ class HomeFragment : Fragment() {
         setupGenreChips()
         setupSorting()
         setupRefreshLayout()
+        setupFeaturedClick()
         observeViewModel()
+    }
+
+    private fun setupFeaturedClick() {
+        binding.featuredContainer.setOnClickListener {
+            viewModel.featuredMovie.value?.let { movie ->
+                openDetail(movie)
+            }
+        }
     }
 
     private fun setupRefreshLayout() {
@@ -199,9 +208,22 @@ class HomeFragment : Fragment() {
             val type = viewModel.getSortType()
             val isEnabled = viewModel.isSortEnabled()
             
-            binding.btnSortImdb.setBackgroundResource(if (isEnabled && type == "IMDb") R.drawable.bg_nav_selected else R.drawable.bg_chip_imdb)
-            binding.btnSortRt.setBackgroundResource(if (isEnabled && type == "Rotten Tomatoes") R.drawable.bg_nav_selected else R.drawable.bg_chip_imdb)
-            binding.btnSortMeta.setBackgroundResource(if (isEnabled && type == "Metacritic") R.drawable.bg_nav_selected else R.drawable.bg_chip_imdb)
+            val imdbSelected = isEnabled && type == "IMDb"
+            val rtSelected = isEnabled && type == "Rotten Tomatoes"
+            val metaSelected = isEnabled && type == "Metacritic"
+
+            binding.btnSortImdb.isSelected = imdbSelected
+            binding.tvSortImdb.setTextColor(if (imdbSelected) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+            // Only tint IMDb logo black when selected so it's visible on yellow background
+            binding.ivSortImdb.imageTintList = if (imdbSelected) android.content.res.ColorStateList.valueOf(android.graphics.Color.BLACK) else null
+
+            binding.btnSortRt.isSelected = rtSelected
+            binding.tvSortRt.setTextColor(if (rtSelected) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+            binding.ivSortRt.imageTintList = null // Keep original brand colors
+
+            binding.btnSortMeta.isSelected = metaSelected
+            binding.tvSortMeta.setTextColor(if (metaSelected) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+            binding.ivSortMeta.imageTintList = null // Keep original brand colors
         }
     }
 
