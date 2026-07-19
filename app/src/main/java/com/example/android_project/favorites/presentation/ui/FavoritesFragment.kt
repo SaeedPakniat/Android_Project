@@ -90,8 +90,10 @@ class FavoritesFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = HorizontalMovieAdapter(
-            emptyList(),
-            com.example.android_project.R.drawable.ic_heart,
+            movies = emptyList(),
+            sortType = "IMDb", // Initial placeholder
+            isSortEnabled = false,
+            actionIconRes = com.example.android_project.R.drawable.ic_heart,
             onMovieClick = { movie ->
                 val intent = Intent(requireContext(), DetailActivity::class.java)
                 intent.putExtra("imdb_id", movie.imdbId)
@@ -112,6 +114,10 @@ class FavoritesFragment : Fragment() {
 
     private fun refreshData() {
         lifecycleScope.launch {
+            val sortType = viewModel.getSortType()
+            val isEnabled = viewModel.isSortEnabled()
+            adapter.updateSort(sortType, isEnabled)
+
             val movies = viewModel.getFavorites()
             allMovies = movies
             

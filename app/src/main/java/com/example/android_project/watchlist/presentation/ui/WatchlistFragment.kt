@@ -91,8 +91,10 @@ class WatchlistFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = HorizontalMovieAdapter(
-            emptyList(),
-            com.example.android_project.R.drawable.ic_bookmark,
+            movies = emptyList(),
+            sortType = "IMDb",
+            isSortEnabled = false,
+            actionIconRes = com.example.android_project.R.drawable.ic_bookmark,
             onMovieClick = { movie ->
                 val intent = Intent(requireContext(), DetailActivity::class.java)
                 intent.putExtra("imdb_id", movie.imdbId)
@@ -160,6 +162,10 @@ class WatchlistFragment : Fragment() {
 
     private fun refreshData() {
         lifecycleScope.launch {
+            val sortType = viewModel.getSortType()
+            val isEnabled = viewModel.isSortEnabled()
+            adapter.updateSort(sortType, isEnabled)
+
             val movies = viewModel.getWatchlist()
             allMovies = movies
             

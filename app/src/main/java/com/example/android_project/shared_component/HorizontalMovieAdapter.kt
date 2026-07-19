@@ -9,6 +9,8 @@ import com.example.android_project.home.data.model.Movie
 
 class HorizontalMovieAdapter(
     private var movies: List<Movie>,
+    private var sortType: String = "IMDb",
+    private var isSortEnabled: Boolean = false,
     private val actionIconRes: Int,
     private val onMovieClick: (Movie) -> Unit,
     private val onActionClick: (Movie) -> Unit
@@ -16,6 +18,13 @@ class HorizontalMovieAdapter(
 
     fun updateMovies(newMovies: List<Movie>) {
         movies = newMovies
+        notifyDataSetChanged()
+    }
+
+    fun updateSort(newSortType: String, enabled: Boolean) {
+        if (sortType == newSortType && isSortEnabled == enabled) return
+        sortType = newSortType
+        isSortEnabled = enabled
         notifyDataSetChanged()
     }
 
@@ -38,7 +47,22 @@ class HorizontalMovieAdapter(
         fun bind(movie: Movie) {
             binding.tvTitle.text = movie.title
             binding.tvInfo.text = "${movie.year} | ${movie.genre ?: movie.type}"
-            binding.tvRating.text = movie.imdbRating ?: "N/A"
+            
+            val rating = when (sortType) {
+                "Rotten Tomatoes" -> {
+                    binding.ivRatingSource.setImageResource(R.drawable.ic_rt)
+                    movie.rottenTomatoesRating
+                }
+                "Metacritic" -> {
+                    binding.ivRatingSource.setImageResource(R.drawable.ic_meta)
+                    movie.metacriticRating
+                }
+                else -> {
+                    binding.ivRatingSource.setImageResource(R.drawable.ic_imdb)
+                    movie.imdbRating
+                }
+            }
+            binding.tvRating.text = rating ?: "N/A"
             
             ImageLoader.load(movie.poster, binding.ivPoster)
 
