@@ -42,6 +42,10 @@ class FavoritesFragment : Fragment() {
         setupRecyclerView()
         setupSearch()
         setupClearAll()
+    }
+
+    override fun onResume() {
+        super.onResume()
         refreshData()
     }
 

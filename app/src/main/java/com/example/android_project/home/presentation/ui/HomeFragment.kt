@@ -65,6 +65,11 @@ class HomeFragment : Fragment() {
         observeViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadInitialData()
+    }
+
     private fun setupFeaturedClick() {
         binding.featuredContainer.setOnClickListener {
             viewModel.featuredMovie.value?.let { movie ->
