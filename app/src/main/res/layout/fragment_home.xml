@@ -45,24 +45,66 @@
                 android:layout_margin="16dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="FEATURED MOVIE"
-                    android:textAllCaps="true"
-                    android:textColor="@color/featured_label"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tv_featured_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/text_white"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    tools:text="War Horse" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="FEATURED MOVIE"
+                            android:textAllCaps="true"
+                            android:textColor="@color/featured_label"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_featured_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/text_white"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            tools:text="War Horse" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/btn_featured_favorite"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_back_button"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_heart"
+                            app:tint="@color/white"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                        <ImageView
+                            android:id="@+id/btn_featured_watchlist"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:layout_marginStart="12dp"
+                            android:background="@drawable/bg_back_button"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_bookmark"
+                            app:tint="@color/white"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </LinearLayout>
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/tv_featured_info"

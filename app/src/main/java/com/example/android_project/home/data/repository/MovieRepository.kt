@@ -68,6 +68,10 @@ class MovieRepository(
         sortMovies(dao.getWatchlistMovies())
     }
 
+    suspend fun insertMovie(movie: Movie) = withContext(Dispatchers.IO) {
+        dao.insertMovie(movie)
+    }
+
     suspend fun addToFavorites(movie: Movie) = withContext(Dispatchers.IO) {
         dao.insertMovie(movie)
         dao.insertFavorite(FavoriteMovie(movie.imdbId))

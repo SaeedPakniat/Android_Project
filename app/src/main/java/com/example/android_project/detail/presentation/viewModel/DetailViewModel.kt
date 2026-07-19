@@ -55,8 +55,7 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         val movie = repository.getMovieDetail(imdbId)
         if (movie != null) {
             movie.userRating = rating
-            // Assuming insertMovie updates if it exists
-            repository.addToFavorites(movie) // This will insert/update movie in DB
+            repository.insertMovie(movie)
         }
     }
 

@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -62,12 +63,22 @@ class HomeFragment : Fragment() {
         setupSorting()
         setupRefreshLayout()
         setupFeaturedClick()
+        setupFeaturedActions()
         observeViewModel()
+    }
+
+    private fun setupFeaturedActions() {
+        binding.btnFeaturedFavorite.setOnClickListener {
+            viewModel.toggleFeaturedFavorite()
+        }
+        binding.btnFeaturedWatchlist.setOnClickListener {
+            viewModel.toggleFeaturedWatchlist()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadInitialData()
+        viewModel.refreshFeaturedStatus()
     }
 
     private fun setupFeaturedClick() {
@@ -137,6 +148,23 @@ class HomeFragment : Fragment() {
                 launch {
                     viewModel.isLoading.collectLatest { isLoading ->
                         binding.swipeRefresh.isRefreshing = isLoading
+                    }
+                }
+                launch {
+                    viewModel.isFeaturedFavorite.collectLatest { isFav ->
+                        binding.btnFeaturedFavorite.setImageResource(
+                            if (isFav) R.drawable.ic_heart else R.drawable.ic_heart
+                        )
+                        binding.btnFeaturedFavorite.imageTintList = android.content.res.ColorStateList.valueOf(
+                            if (isFav) android.graphics.Color.RED else android.graphics.Color.WHITE
+                        )
+                    }
+                }
+                launch {
+                    viewModel.isFeaturedInWatchlist.collectLatest { isInWatchlist ->
+                        binding.btnFeaturedWatchlist.imageTintList = android.content.res.ColorStateList.valueOf(
+                            if (isInWatchlist) ContextCompat.getColor(requireContext(), R.color.accent_yellow) else android.graphics.Color.WHITE
+                        )
                     }
                 }
             }

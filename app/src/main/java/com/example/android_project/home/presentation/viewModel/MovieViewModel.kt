@@ -47,6 +47,12 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _isFeaturedFavorite = MutableStateFlow(false)
+    val isFeaturedFavorite: StateFlow<Boolean> = _isFeaturedFavorite.asStateFlow()
+
+    private val _isFeaturedInWatchlist = MutableStateFlow(false)
+    val isFeaturedInWatchlist: StateFlow<Boolean> = _isFeaturedInWatchlist.asStateFlow()
+
     private var currentGenre: String = "horror"
 
     init {
@@ -75,6 +81,8 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
 
                 _trendingMovies.value = repository.searchMovies("2024").take(10)
                 _upcomingMovies.value = repository.searchMovies("2025").take(10)
+
+                updateFeaturedStatus()
             } catch (e: Exception) {
                 // Handle error
             } finally {
@@ -102,6 +110,42 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
             repository.clearRecentlyViewed()
             _recentlyViewed.value = emptyList()
         }
+    }
+
+    fun toggleFeaturedFavorite() {
+        viewModelScope.launch {
+            val movie = _featuredMovie.value ?: return@launch
+            if (_isFeaturedFavorite.value) {
+                repository.removeFromFavorites(movie.imdbId)
+            } else {
+                repository.addToFavorites(movie)
+            }
+            updateFeaturedStatus()
+        }
+    }
+
+    fun toggleFeaturedWatchlist() {
+        viewModelScope.launch {
+            val movie = _featuredMovie.value ?: return@launch
+            if (_isFeaturedInWatchlist.value) {
+                repository.removeFromWatchlist(movie.imdbId)
+            } else {
+                repository.addToWatchlist(movie)
+            }
+            updateFeaturedStatus()
+        }
+    }
+
+    fun refreshFeaturedStatus() {
+        viewModelScope.launch {
+            val movie = _featuredMovie.value ?: return@launch
+            _isFeaturedFavorite.value = repository.isFavorite(movie.imdbId)
+            _isFeaturedInWatchlist.value = repository.isInWatchlist(movie.imdbId)
+        }
+    }
+
+    private fun updateFeaturedStatus() {
+        refreshFeaturedStatus()
     }
 
     suspend fun searchMovies(query: String): List<Movie> = withContext(Dispatchers.IO) {
