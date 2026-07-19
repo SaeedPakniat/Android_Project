@@ -35,6 +35,15 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     private val _genreMovies = MutableStateFlow<List<Movie>>(emptyList())
     val genreMovies: StateFlow<List<Movie>> = _genreMovies.asStateFlow()
 
+    private val _recentlyViewed = MutableStateFlow<List<Movie>>(emptyList())
+    val recentlyViewed: StateFlow<List<Movie>> = _recentlyViewed.asStateFlow()
+
+    private val _trendingMovies = MutableStateFlow<List<Movie>>(emptyList())
+    val trendingMovies: StateFlow<List<Movie>> = _trendingMovies.asStateFlow()
+
+    private val _upcomingMovies = MutableStateFlow<List<Movie>>(emptyList())
+    val upcomingMovies: StateFlow<List<Movie>> = _upcomingMovies.asStateFlow()
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
@@ -61,6 +70,11 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
                 _randomPicks.value = repository.sortMovies(randomList)
 
                 _genreMovies.value = repository.searchMovies(currentGenre).take(9)
+
+                _recentlyViewed.value = repository.getRecentlyViewed()
+
+                _trendingMovies.value = repository.searchMovies("2024").take(10)
+                _upcomingMovies.value = repository.searchMovies("2025").take(10)
             } catch (e: Exception) {
                 // Handle error
             } finally {
@@ -73,6 +87,20 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
         currentGenre = genre
         viewModelScope.launch {
             _genreMovies.value = repository.searchMovies(genre).take(9)
+        }
+    }
+
+    fun addToRecentlyViewed(movie: Movie) {
+        viewModelScope.launch {
+            repository.addToRecentlyViewed(movie)
+            _recentlyViewed.value = repository.getRecentlyViewed()
+        }
+    }
+
+    fun clearRecentlyViewed() {
+        viewModelScope.launch {
+            repository.clearRecentlyViewed()
+            _recentlyViewed.value = emptyList()
         }
     }
 

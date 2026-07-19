@@ -32,6 +32,9 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: MovieViewModel
 
     private lateinit var randomAdapter: RandomMovieAdapter
+    private lateinit var recentAdapter: RandomMovieAdapter
+    private lateinit var trendingAdapter: MovieAdapter
+    private lateinit var upcomingAdapter: MovieAdapter
     private lateinit var genreAdapter: MovieAdapter
     private lateinit var searchAdapter: MovieAdapter
     
@@ -49,6 +52,9 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity(), MovieViewModelFactory(requireActivity().application))[MovieViewModel::class.java]
 
         setupRandomPicksRecyclerView()
+        setupRecentlyViewedRecyclerView()
+        setupTrendingRecyclerView()
+        setupUpcomingRecyclerView()
         setupGenreRecyclerView()
         setupSearchRecyclerView()
         setupSearchBar()
@@ -62,6 +68,7 @@ class HomeFragment : Fragment() {
     private fun setupFeaturedClick() {
         binding.featuredContainer.setOnClickListener {
             viewModel.featuredMovie.value?.let { movie ->
+                viewModel.addToRecentlyViewed(movie)
                 openDetail(movie)
             }
         }
@@ -101,6 +108,28 @@ class HomeFragment : Fragment() {
                     }
                 }
                 launch {
+                    viewModel.trendingMovies.collectLatest { movies ->
+                        trendingAdapter.updateMovies(movies)
+                        updateAdaptersSort()
+                    }
+                }
+                launch {
+                    viewModel.upcomingMovies.collectLatest { movies ->
+                        upcomingAdapter.updateMovies(movies)
+                        updateAdaptersSort()
+                    }
+                }
+                launch {
+                    viewModel.recentlyViewed.collectLatest { movies ->
+                        if (movies.isEmpty()) {
+                            binding.recentlyViewedContainer.visibility = View.GONE
+                        } else {
+                            binding.recentlyViewedContainer.visibility = View.VISIBLE
+                            recentAdapter.updateMovies(movies)
+                        }
+                    }
+                }
+                launch {
                     viewModel.isLoading.collectLatest { isLoading ->
                         binding.swipeRefresh.isRefreshing = isLoading
                     }
@@ -113,6 +142,7 @@ class HomeFragment : Fragment() {
 
     private fun setupRandomPicksRecyclerView() {
         randomAdapter = RandomMovieAdapter(emptyList()) { movie ->
+            viewModel.addToRecentlyViewed(movie)
             openDetail(movie)
         }
         binding.rvRandomPicks.apply {
@@ -121,8 +151,45 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun setupRecentlyViewedRecyclerView() {
+        recentAdapter = RandomMovieAdapter(emptyList()) { movie ->
+            viewModel.addToRecentlyViewed(movie)
+            openDetail(movie)
+        }
+        binding.rvRecentlyViewed.apply {
+            adapter = recentAdapter
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        }
+        binding.btnClearRecent.setOnClickListener {
+            viewModel.clearRecentlyViewed()
+        }
+    }
+
+    private fun setupTrendingRecyclerView() {
+        trendingAdapter = MovieAdapter(emptyList()) { movie ->
+            viewModel.addToRecentlyViewed(movie)
+            openDetail(movie)
+        }
+        binding.rvTrending.apply {
+            adapter = trendingAdapter
+            layoutManager = GridLayoutManager(requireContext(), 3)
+        }
+    }
+
+    private fun setupUpcomingRecyclerView() {
+        upcomingAdapter = MovieAdapter(emptyList()) { movie ->
+            viewModel.addToRecentlyViewed(movie)
+            openDetail(movie)
+        }
+        binding.rvUpcoming.apply {
+            adapter = upcomingAdapter
+            layoutManager = GridLayoutManager(requireContext(), 3)
+        }
+    }
+
     private fun setupGenreRecyclerView() {
         genreAdapter = MovieAdapter(emptyList()) { movie ->
+            viewModel.addToRecentlyViewed(movie)
             openDetail(movie)
         }
         binding.rvGenreMovies.apply {
@@ -133,6 +200,7 @@ class HomeFragment : Fragment() {
 
     private fun setupSearchRecyclerView() {
         searchAdapter = MovieAdapter(emptyList()) { movie ->
+            viewModel.addToRecentlyViewed(movie)
             openDetail(movie)
         }
         binding.rvSearchResults.apply {
@@ -233,11 +301,17 @@ class HomeFragment : Fragment() {
             val enabled = viewModel.isSortEnabled()
             
             randomAdapter.updateSort(type, enabled)
+            recentAdapter.updateSort(type, enabled)
+            trendingAdapter.updateSort(type, enabled)
+            upcomingAdapter.updateSort(type, enabled)
             genreAdapter.updateSort(type, enabled)
             searchAdapter.updateSort(type, enabled)
 
             // Re-sort current lists to ensure they match the selected criteria
             randomAdapter.updateMovies(viewModel.sortMovies(randomAdapter.getMovies()))
+            recentAdapter.updateMovies(viewModel.sortMovies(recentAdapter.getMovies()))
+            trendingAdapter.updateMovies(viewModel.sortMovies(trendingAdapter.getMovies()))
+            upcomingAdapter.updateMovies(viewModel.sortMovies(upcomingAdapter.getMovies()))
             genreAdapter.updateMovies(viewModel.sortMovies(genreAdapter.getMovies()))
             searchAdapter.updateMovies(viewModel.sortMovies(searchAdapter.getMovies()))
         }

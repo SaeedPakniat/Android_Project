@@ -42,7 +42,24 @@ class WatchlistFragment : Fragment() {
 
         setupRecyclerView()
         setupSearch()
+        setupClearAll()
         refreshData()
+    }
+
+    private fun setupClearAll() {
+        binding.btnClearAll.setOnClickListener {
+            androidx.appcompat.app.AlertDialog.Builder(requireContext(), com.example.android_project.R.style.CustomDialogTheme)
+                .setTitle("Clear Watchlist")
+                .setMessage("Are you sure you want to remove all movies from your watchlist?")
+                .setPositiveButton("Clear All") { _, _ ->
+                    lifecycleScope.launch {
+                        viewModel.clearWatchlist()
+                        refreshData()
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
     }
 
     private fun setupSearch() {

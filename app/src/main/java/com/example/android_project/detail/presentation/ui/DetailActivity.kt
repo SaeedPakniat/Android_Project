@@ -1,5 +1,7 @@
 package com.example.android_project.detail.presentation.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +28,12 @@ class DetailActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, DetailViewModelFactory(application))[DetailViewModel::class.java]
 
         binding.ivBack.setOnClickListener { finish() }
+
+        binding.ivShare.setOnClickListener { shareMovie() }
+
+        binding.containerImdb.setOnClickListener { openExternalLink("https://www.imdb.com/title/${currentMovie?.imdbId}") }
+        binding.containerRt.setOnClickListener { openExternalLink("https://www.rottentomatoes.com/search?search=${currentMovie?.title}") }
+        binding.containerMeta.setOnClickListener { openExternalLink("https://www.metacritic.com/search/movie/${currentMovie?.title}/results") }
 
         val imdbId = intent.getStringExtra("imdb_id") ?: return
         loadMovieDetail(imdbId)
@@ -71,8 +79,12 @@ class DetailActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     if (isFav) {
                         viewModel.removeFromFavorites(imdbId)
+                        Toast.makeText(this@DetailActivity, "Removed from Favorites", Toast.LENGTH_SHORT).show()
                     } else {
-                        currentMovie?.let { viewModel.addToFavorites(it) }
+                        currentMovie?.let { 
+                            viewModel.addToFavorites(it)
+                            Toast.makeText(this@DetailActivity, "Added to Favorites", Toast.LENGTH_SHORT).show()
+                        }
                     }
                     updateButtonStates(imdbId)
                 }
@@ -83,12 +95,36 @@ class DetailActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     if (isInWatchlist) {
                         viewModel.removeFromWatchlist(imdbId)
+                        Toast.makeText(this@DetailActivity, "Removed from Watchlist", Toast.LENGTH_SHORT).show()
                     } else {
-                        currentMovie?.let { viewModel.addToWatchlist(it) }
+                        currentMovie?.let { 
+                            viewModel.addToWatchlist(it) 
+                            Toast.makeText(this@DetailActivity, "Added to Watchlist", Toast.LENGTH_SHORT).show()
+                        }
                     }
                     updateButtonStates(imdbId)
                 }
             }
+        }
+    }
+
+    private fun shareMovie() {
+        val movie = currentMovie ?: return
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_SUBJECT, "Check out this movie!")
+            val text = "Check out ${movie.title} (${movie.year}) on IMDb: https://www.imdb.com/title/${movie.imdbId}\n\nPlot: ${movie.plot}"
+            putExtra(Intent.EXTRA_TEXT, text)
+        }
+        startActivity(Intent.createChooser(shareIntent, "Share movie via"))
+    }
+
+    private fun openExternalLink(url: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Could not open link", Toast.LENGTH_SHORT).show()
         }
     }
 }

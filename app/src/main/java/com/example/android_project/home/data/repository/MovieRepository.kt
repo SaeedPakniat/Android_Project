@@ -77,6 +77,10 @@ class MovieRepository(
         dao.deleteFavorite(imdbId)
     }
 
+    suspend fun clearFavorites() = withContext(Dispatchers.IO) {
+        dao.clearFavorites()
+    }
+
     suspend fun addToWatchlist(movie: Movie) = withContext(Dispatchers.IO) {
         dao.insertMovie(movie)
         dao.insertWatchlist(WatchlistMovie(movie.imdbId))
@@ -86,12 +90,29 @@ class MovieRepository(
         dao.deleteWatchlist(imdbId)
     }
 
+    suspend fun clearWatchlist() = withContext(Dispatchers.IO) {
+        dao.clearWatchlist()
+    }
+
     suspend fun isFavorite(imdbId: String): Boolean = withContext(Dispatchers.IO) {
         dao.isFavorite(imdbId)
     }
     
     suspend fun isInWatchlist(imdbId: String): Boolean = withContext(Dispatchers.IO) {
         dao.isInWatchlist(imdbId)
+    }
+
+    suspend fun addToRecentlyViewed(movie: Movie) = withContext(Dispatchers.IO) {
+        dao.insertMovie(movie)
+        dao.insertRecentlyViewed(RecentlyViewedMovie(movie.imdbId, System.currentTimeMillis()))
+    }
+
+    suspend fun getRecentlyViewed(): List<Movie> = withContext(Dispatchers.IO) {
+        dao.recentlyViewedMovies
+    }
+
+    suspend fun clearRecentlyViewed() = withContext(Dispatchers.IO) {
+        dao.clearRecentlyViewed()
     }
 
     suspend fun sortMovies(movies: List<Movie>): List<Movie> {

@@ -4,6 +4,7 @@ import androidx.room.*;
 import com.example.android_project.home.data.model.Movie;
 import com.example.android_project.home.data.model.FavoriteMovie;
 import com.example.android_project.home.data.model.WatchlistMovie;
+import com.example.android_project.home.data.model.RecentlyViewedMovie;
 import java.util.List;
 
 @Dao
@@ -35,6 +36,9 @@ public interface MovieDao {
     @Query("SELECT * FROM favorite_movies")
     List<FavoriteMovie> getAllFavorites();
 
+    @Query("DELETE FROM favorite_movies")
+    void clearFavorites();
+
     @Query("SELECT movies.* FROM movies INNER JOIN favorite_movies ON movies.imdbId = favorite_movies.imdbId")
     List<Movie> getFavoriteMovies();
 
@@ -43,6 +47,9 @@ public interface MovieDao {
 
     @Query("DELETE FROM watchlist_movies WHERE imdbId = :imdbId")
     void deleteWatchlist(String imdbId);
+
+    @Query("DELETE FROM watchlist_movies")
+    void clearWatchlist();
 
     @Query("SELECT * FROM watchlist_movies")
     List<WatchlistMovie> getAllWatchlist();
@@ -55,4 +62,13 @@ public interface MovieDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM watchlist_movies WHERE imdbId = :imdbId)")
     boolean isInWatchlist(String imdbId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertRecentlyViewed(RecentlyViewedMovie recent);
+
+    @Query("SELECT movies.* FROM movies INNER JOIN recently_viewed ON movies.imdbId = recently_viewed.imdbId ORDER BY recently_viewed.timestamp DESC LIMIT 10")
+    List<Movie> getRecentlyViewedMovies();
+
+    @Query("DELETE FROM recently_viewed")
+    void clearRecentlyViewed();
 }

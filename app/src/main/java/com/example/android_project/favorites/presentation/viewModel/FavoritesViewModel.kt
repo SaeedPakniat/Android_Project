@@ -27,6 +27,10 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
         repository.removeFromFavorites(imdbId)
     }
 
+    suspend fun clearFavorites() = withContext(Dispatchers.IO) {
+        repository.clearFavorites()
+    }
+
     suspend fun getSortType() = withContext(Dispatchers.IO) {
         repository.getSortType()
     }

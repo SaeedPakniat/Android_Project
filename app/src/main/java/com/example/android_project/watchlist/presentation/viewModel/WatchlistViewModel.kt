@@ -27,6 +27,10 @@ class WatchlistViewModel(application: Application) : AndroidViewModel(applicatio
         repository.removeFromWatchlist(imdbId)
     }
 
+    suspend fun clearWatchlist() = withContext(Dispatchers.IO) {
+        repository.clearWatchlist()
+    }
+
     suspend fun addToFavorites(movie: Movie) = withContext(Dispatchers.IO) {
         repository.addToFavorites(movie)
     }

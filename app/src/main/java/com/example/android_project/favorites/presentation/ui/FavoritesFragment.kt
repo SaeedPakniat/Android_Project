@@ -41,7 +41,24 @@ class FavoritesFragment : Fragment() {
 
         setupRecyclerView()
         setupSearch()
+        setupClearAll()
         refreshData()
+    }
+
+    private fun setupClearAll() {
+        binding.btnClearAll.setOnClickListener {
+            androidx.appcompat.app.AlertDialog.Builder(requireContext(), com.example.android_project.R.style.CustomDialogTheme)
+                .setTitle("Clear Favorites")
+                .setMessage("Are you sure you want to remove all movies from your favorites?")
+                .setPositiveButton("Clear All") { _, _ ->
+                    lifecycleScope.launch {
+                        viewModel.clearFavorites()
+                        refreshData()
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
     }
 
     private fun setupSearch() {

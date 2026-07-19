@@ -7,8 +7,9 @@ import androidx.room.RoomDatabase;
 import com.example.android_project.home.data.model.Movie;
 import com.example.android_project.home.data.model.FavoriteMovie;
 import com.example.android_project.home.data.model.WatchlistMovie;
+import com.example.android_project.home.data.model.RecentlyViewedMovie;
 
-@Database(entities = {Movie.class, FavoriteMovie.class, WatchlistMovie.class}, version = 1, exportSchema = false)
+@Database(entities = {Movie.class, FavoriteMovie.class, WatchlistMovie.class, RecentlyViewedMovie.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract MovieDao movieDao();
 
@@ -20,6 +21,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "movie_database")
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
